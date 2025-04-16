@@ -17,9 +17,25 @@
         width: 100vw;
         height: 100vh;
       }
+
+      .popup {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 8px;
+        font-size: 18px;
+        text-align: center;
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <div id="popup" class="popup">ターゲットが読み込まれました！</div>
+
     <a-scene 
       mindar-image="imageTargetSrc: https://cdn.glitch.global/61e37d6e-c211-4f2e-a14f-f422bac2ca07/neco.mind?v=1744701344475;" 
       vr-mode-ui="enabled: false" 
@@ -32,7 +48,7 @@
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0">
+      <a-entity mindar-image-target="targetIndex: 0" id="target">
         <a-gltf-model 
           src="#avatarModel" 
           position="0 0 0.5" 
@@ -44,27 +60,16 @@
     </a-scene>
 
     <script>
-      // ウィンドウのリサイズイベントを監視
-      window.addEventListener('resize', () => {
-        const scene = document.querySelector('a-scene');
-        const camera = document.querySelector('a-camera');
+      // ターゲットが読み込まれた際にポップアップメッセージを表示
+      const popup = document.getElementById('popup');
+      const target = document.querySelector('#target');
 
-        if (camera) {
-          const threeCamera = camera.getObject3D('camera');
-          if (threeCamera) {
-            threeCamera.aspect = window.innerWidth / window.innerHeight;
-            threeCamera.updateProjectionMatrix(); // Three.jsのカメラでProjectionMatrixを更新
-          }
-        }
-
-        if (scene) {
-          scene.style.width = `${window.innerWidth}px`;
-          scene.style.height = `${window.innerHeight}px`;
-        }
+      target.addEventListener('targetFound', () => {
+        popup.style.display = 'block';
+        setTimeout(() => {
+          popup.style.display = 'none';
+        }, 3000); // 3秒後にポップアップを非表示
       });
-
-      // 初回ロード時のリサイズ処理
-      window.dispatchEvent(new Event('resize'));
     </script>
   </body>
 </html>
