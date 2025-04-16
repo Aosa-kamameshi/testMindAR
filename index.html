@@ -4,6 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      a-scene {
+        width: 100vw;  /* ビューポートの幅 */
+        height: 100vh; /* ビューポートの高さ */
+      }
+    </style>
   </head>
   <body>
     <a-scene 
@@ -28,5 +34,36 @@
         </a-gltf-model>
       </a-entity>
     </a-scene>
+
+    <script>
+      // ウィンドウのリサイズイベントを監視
+      window.addEventListener('resize', () => {
+        // A-Frameシーン要素を取得
+        const scene = document.querySelector('a-scene');
+
+        // カメラ要素を取得
+        const camera = document.querySelector('a-camera');
+
+        // 現在のウィンドウサイズを取得
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // 必要に応じてカメラやシーンの設定を更新
+        if (camera) {
+          const aspectRatio = width / height;
+          camera.setAttribute('aspectRatio', aspectRatio);
+          // カメラのプロジェクションマトリックスを更新
+          camera.components.camera.updateProjectionMatrix();
+        }
+
+        if (scene) {
+          scene.style.width = `${width}px`;
+          scene.style.height = `${height}px`;
+        }
+      });
+
+      // 初回ロード時にも同じ処理を実行
+      window.dispatchEvent(new Event('resize'));
+    </script>
   </body>
 </html>
